@@ -103,7 +103,6 @@ local config = function()
       vim.lsp.start_client(require("lspconfig").cairo_ls)
     end,
   })
-  -- Solidity (Nomic Foundation)
 
   -- Fetch Foundry remappings dynamically
   local function get_foundry_remappings()
@@ -123,11 +122,34 @@ local config = function()
     return remappings
   end
 
+  -- Go
+  lspconfig.gopls.setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+    filetypes = { "go", "gomod", "gowork", "gotmpl" },
+    root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+      gopls = {
+        completeUnimported = true,
+        usePlaceholders = true,
+        analyses = {
+          unusedparams = true,
+        },
+      },
+    },
+  })
+
   -- Solidity (Nomic Foundation)
   lspconfig.solidity.setup({
     cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
     capabilities = capabilities,
-    on_attach = keybindings.on_attach,
+    on_attach = function(client, bufnr)
+      -- Enable definition (gd)
+      vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr })
+
+      -- Enable references
+      vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr })
+    end,
     filetypes = { "solidity" },
     root_dir = lspconfig.util.root_pattern("foundry.toml", "hardhat.config.*", "remappings.txt", ".git"),
     settings = {
@@ -137,6 +159,7 @@ local config = function()
       },
     },
   })
+
   -- Lua
   lspconfig.lua_ls.setup({
     capabilities = capabilities,

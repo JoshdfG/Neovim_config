@@ -1,10 +1,12 @@
+local on_attach = require("util.lsp").on_attach
+
 return {
   {
-    'nvim-treesitter/nvim-treesitter',
-    opts = { ensure_installed = { 'go', 'gomod', 'gowork', 'gosum' } },
+    "nvim-treesitter/nvim-treesitter",
+    opts = { ensure_installed = { "go", "gomod", "gowork", "gosum", "gotmpl" } },
   },
   {
-    'neovim/nvim-lspconfig',
+    "neovim/nvim-lspconfig",
     opts = {
       servers = {
         gopls = {
@@ -41,11 +43,11 @@ return {
               completeUnimported = true,
               staticcheck = true,
               directoryFilters = {
-                '-.git',
-                '-.vscode',
-                '-.idea',
-                '-.vscode-test',
-                '-node_modules',
+                "-.git",
+                "-.vscode",
+                "-.idea",
+                "-.vscode-test",
+                "-node_modules",
               },
               semanticTokens = true,
             },
@@ -54,12 +56,18 @@ return {
       },
       setup = {
         gopls = function(_, opts)
-          -- workaround for gopls not supporting semanticTokensProvider
-          -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
-          Utils.lsp.on_attach(function(client, _)
-            if not client.server_capabilities.semanticTokensProvider then
-              local semantic =
-                client.config.capabilities.textDocument.semanticTokens
+          local user_attach = on_attach
+
+          opts.on_attach = function(client, bufnr)
+            -- 1. load default lsp keymaps (sets gd!)
+            require("lazyvim.plugins.lsp.keymaps").on_attach(client, bufnr)
+
+            -- 2. load user custom hooks
+            user_attach(client, bufnr)
+
+            -- 3. semantic tokens workaround
+            if client.name == "gopls" and not client.server_capabilities.semanticTokensProvider then
+              local semantic = client.config.capabilities.textDocument.semanticTokens
               client.server_capabilities.semanticTokensProvider = {
                 full = true,
                 legend = {
@@ -69,8 +77,7 @@ return {
                 range = true,
               }
             end
-          end, 'gopls')
-          -- end workaround
+          end
         end,
       },
     },

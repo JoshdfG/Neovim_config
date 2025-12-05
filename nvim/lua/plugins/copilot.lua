@@ -1,0 +1,63 @@
+return {
+  -- Override LazyVim copilot config completely
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   cmd = "Copilot",
+  --   event = "InsertEnter",
+  --   -- Override any LazyVim defaults
+  --   opts = {},
+  --   config = function()
+  --     require("copilot").setup({
+  --       suggestion = {
+  --         enabled = true,
+  --         auto_trigger = true,
+  --         debounce = 75,
+  --         keymap = {
+  --           accept = "<C-y>",         -- Ctrl+y to accept suggestion (easy to reach)
+  --           accept_word = false,
+  --           accept_line = false,
+  --           next = "<M-]>",          -- Alt+] for next suggestion
+  --           prev = "<M-[>",          -- Alt+[ for previous suggestion
+  --           dismiss = "<C-]>",       -- Ctrl+] to dismiss
+  --         },
+  --       },
+  --       panel = {
+  --         enabled = true,
+  --         auto_refresh = false,
+  --         keymap = {
+  --           jump_prev = "[[",
+  --           jump_next = "]]",
+  --           accept = "<CR>",
+  --           refresh = "gr",
+  --           open = "<M-CR>",        -- Alt+Enter to open panel
+  --         },
+  --         layout = {
+  --           position = "bottom",    -- position of the panel
+  --           ratio = 0.4
+  --         },
+  --       },
+  --       filetypes = {
+  --         yaml = false,
+  --         markdown = false,
+  --         help = false,
+  --         gitcommit = false,
+  --         gitrebase = false,
+  --         hgcommit = false,
+  --         svn = false,
+  --         cvs = false,
+  --         ["."] = false,
+  --       },
+  --       copilot_node_command = 'node', -- Node.js version must be > 18.x
+  --       server_opts_overrides = {},
+  --     })
+  --   end,
+  -- },
+  -- -- Copilot integration with nvim-cmp
+  -- {
+  --   "zbirenbaum/copilot-cmp",
+  --   dependencies = "copilot.lua",
+  --   config = function()
+  --     require("copilot_cmp").setup()
+  --   end,
+  -- },
+}

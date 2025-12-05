@@ -29,6 +29,12 @@ require("lazy").setup({
         cmp = {
           enabled = false,
         },
+        -- Explicitly disable AI extras
+        extras = {
+          ai = {
+            copilot = false,
+          },
+        },
       },
     },
     -- import/override with your plugins
