@@ -78,6 +78,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
+-- Go
+-- Autocommand for Go files
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+    vim.lsp.buf.format({ async = false })
+  end,
+})
+
 -- Auto-format PostgreSQL/SQL files on save
 -- vim.api.nvim_create_autocmd("BufWritePre", {
 --   pattern = "*.sql",

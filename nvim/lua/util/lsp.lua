@@ -29,16 +29,39 @@ local M = {}
 -- 	end
 -- end
 
+-- optional utility: organize imports for TS/JS
+
 M.typescript_organise_imports = {
-	description = "Organise Imports",
-	function()
-		local params = {
-			command = "_typescript.organizeImports",
-			arguments = { vim.fn.expand("%:p") },
-		}
-		-- reorganise imports
-		vim.lsp.buf.execute_command(params)
-	end,
+  description = "Organise Imports",
+  function()
+    local params = {
+      command = "_typescript.organizeImports",
+      arguments = { vim.fn.expand("%:p") },
+    }
+
+    -- new correct API
+    vim.lsp.buf_request(0, "workspace/executeCommand", params, function(err)
+      if err then
+        vim.notify("Organise imports failed: " .. tostring(err), vim.log.levels.ERROR)
+      end
+    end)
+  end,
 }
 
+-- proper on_attach used by all LSP servers
+function M.on_attach(client, bufnr)
+  local map = function(mode, lhs, rhs, desc)
+    local opts = { buffer = bufnr, noremap = true, silent = true, desc = desc }
+    vim.keymap.set(mode, lhs, rhs, opts)
+  end
+
+  -- generic LSP keymaps
+  map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+  map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+  map("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+  map("n", "gr", vim.lsp.buf.references, "Find references")
+  map("n", "K", vim.lsp.buf.hover, "Hover Documentation")
+end
+
 return M
+

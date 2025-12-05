@@ -229,6 +229,7 @@ return {
             end
 
             vim_item.menu = ({
+              copilot = "[Copilot]",
               nvim_lsp = "[LSP]",
               luasnip = "[Snippet]",
               buffer = "[Buffer]",
@@ -265,8 +266,9 @@ return {
           end, { "i", "s" }),
         }),
         sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
+          { name = "copilot", group_index = 2 },
+          { name = "nvim_lsp", group_index = 2 },
+          { name = "luasnip", group_index = 2 },
           { name = "emoji" },
           { name = "buffer" },
           { name = "path" },
