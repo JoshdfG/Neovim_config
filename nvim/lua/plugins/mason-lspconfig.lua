@@ -1,5 +1,5 @@
 local mason = {
-  "williamboman/mason.nvim",
+  "mason-org/mason.nvim",
   cmd = "Mason",
   event = "BufReadPre",
   opts = {
@@ -18,7 +18,7 @@ local capabilities = cmp_nvim_lsp.default_capabilities()
 
 local mason_lspconfig = {
   capabilities = capabilities,
-  "williamboman/mason-lspconfig.nvim",
+  "mason-org/mason-lspconfig.nvim",
   opts = {
     ensure_installed = {
       -- Existing servers
@@ -42,7 +42,7 @@ local mason_lspconfig = {
     automatic_installation = true,
   },
   event = "BufReadPre",
-  dependencies = "williamboman/mason.nvim",
+  dependencies = "mason-org/mason.nvim",
 }
 
 -- Optionally, configure mason to install non-LSP tools
@@ -52,7 +52,7 @@ local mason_tools = {
   "neovim/nvim-lspconfig",
   dependencies = {
     {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
       opts = {
         ensure_installed = {
           -- Linting and formatting tools
@@ -80,7 +80,7 @@ return {
 }
 
 -- local mason = {
--- 	"williamboman/mason.nvim",
+-- 	"mason-org/mason.nvim",
 -- 	cmd = "Mason",
 -- 	event = "BufReadPre",
 -- 	opts = {
@@ -95,7 +95,7 @@ return {
 -- }
 --
 -- local mason_lspconfig = {
--- 	"williamboman/mason-lspconfig.nvim",
+-- 	"mason-org/mason-lspconfig.nvim",
 -- 	opts = {
 -- 		ensure_installed = {
 -- 			"solidity_ls",
@@ -113,7 +113,7 @@ return {
 -- 		automatic_installation = true,
 -- 	},
 -- 	event = "BufReadPre",
--- 	dependencies = "williamboman/mason.nvim",
+-- 	dependencies = "mason-org/mason.nvim",
 -- }
 --
 -- return {

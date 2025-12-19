@@ -106,9 +106,9 @@ require("lazy").setup({
     },
     -- Add or modify this entry for mason-lspconfig.nvim
     {
-      "williamboman/mason-lspconfig.nvim",
+      "mason-org/mason-lspconfig.nvim",
       lazy = false, -- THIS IS THE CRUCIAL LINE
-      dependencies = { "williamboman/mason.nvim" },
+      dependencies = { "mason-org/mason.nvim" },
     },
     -- { "tribela/vim-transparent" }, -- Keep commented out unless specifically needed.
     {
@@ -185,7 +185,9 @@ require("lazy").setup({
     },
     -- null-ls for formatting
     {
-      "jose-elias-alvarez/null-ls.nvim",
+
+      -- "jose-elias-alvarez/null-ls.nvim",
+      "nvimtools/none-ls.nvim",
       dependencies = { "nvim-lua/plenary.nvim" },
     },
   },
@@ -291,9 +293,9 @@ require("lazy").setup({
 --     },
 --     -- Add or modify this entry for mason-lspconfig.nvim
 --     {
---       "williamboman/mason-lspconfig.nvim",
+--       "mason-org/mason-lspconfig.nvim",
 --       lazy = false, -- THIS IS THE CRUCIAL LINE
---       dependencies = { "williamboman/mason.nvim" },
+--       dependencies = { "mason-org/mason.nvim" },
 --     },
 --     -- { "tribela/vim-transparent" },
 --     {

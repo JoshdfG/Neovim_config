@@ -66,17 +66,17 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 -- })
 
 -- Auto-format SQL files on save using sqlfluff (PostgreSQL dialect)
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*.sql",
-  callback = function()
-    -- Save cursor position
-    local cursor_pos = vim.api.nvim_win_get_cursor(0)
-    -- Format with sqlfluff (PostgreSQL mode)
-    vim.cmd("%!sqlfluff fix --dialect postgres -")
-    -- Restore cursor
-    vim.api.nvim_win_set_cursor(0, cursor_pos)
-  end,
-})
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+--   pattern = "*.sql",
+--   callback = function()
+--     -- Save cursor position
+--     local cursor_pos = vim.api.nvim_win_get_cursor(0)
+--     -- Format with sqlfluff (PostgreSQL mode)
+--     vim.cmd("%!sqlfluff fix --dialect postgres -")
+--     -- Restore cursor
+--     vim.api.nvim_win_set_cursor(0, cursor_pos)
+--   end,
+-- })
 
 -- Go
 -- Autocommand for Go files
