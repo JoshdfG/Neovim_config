@@ -1,10 +1,11 @@
 {
   "extras": [
     "lazyvim.plugins.extras.lang.go",
+    "lazyvim.plugins.extras.lsp.none-ls",
     "lazyvim.plugins.extras.test.core"
   ],
   "news": {
-    "NEWS.md": "10960"
+    "NEWS.md": "11866"
   },
   "version": 8
 }

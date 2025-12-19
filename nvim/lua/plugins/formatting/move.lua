@@ -3,7 +3,7 @@
 return {
   -- Ensure prettier is installed via Mason, as the Move plugin depends on the main prettier executable
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = { ensure_installed = { "prettier" } },
   },
 

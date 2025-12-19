@@ -140,26 +140,49 @@ local config = function()
   })
 
   -- Solidity (Nomic Foundation)
-  lspconfig.solidity.setup({
-    cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
+
+  require("lspconfig").solidity.setup({
+    cmd = { "/Users/MAC/.npm-global/bin/nomicfoundation-solidity-language-server", "--stdio" },
     capabilities = capabilities,
     on_attach = function(client, bufnr)
-      -- Enable definition (gd)
       vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr })
-
-      -- Enable references
       vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr })
+      vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
     end,
     filetypes = { "solidity" },
-    root_dir = lspconfig.util.root_pattern("foundry.toml", "hardhat.config.*", "remappings.txt", ".git"),
+    root_dir = require("lspconfig").util.root_pattern("foundry.toml", "hardhat.config.*", "remappings.txt", ".git"),
     settings = {
       solidity = {
-        includePath = "lib", -- Default Foundry include path, ignored if unused
-        remappings = get_foundry_remappings(), -- Dynamic, empty if not Foundry
+        includePath = vim.fn.getcwd() .. "/lib", -- absolute path
+        remappings = get_foundry_remappings(),
       },
+    },
+    flags = {
+      debounce_text_changes = 150,
+      allow_incremental_sync = true, -- improves indexing
     },
   })
 
+  -- lspconfig.solidity.setup({
+  --   cmd = { "/Users/MAC/.npm-global/bin/nomicfoundation-solidity-language-server", "--stdio" },
+  --   capabilities = capabilities,
+  --   on_attach = function(client, bufnr)
+  --     -- Enable definition (gd)
+  --     vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr })
+  --
+  --     -- Enable references
+  --     vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr })
+  --   end,
+  --   filetypes = { "solidity" },
+  --   root_dir = lspconfig.util.root_pattern("foundry.toml", "hardhat.config.*", "remappings.txt", ".git"),
+  --   settings = {
+  --     solidity = {
+  --       includePath = "lib", -- Default Foundry include path, ignored if unused
+  --       remappings = get_foundry_remappings(), -- Dynamic, empty if not Foundry
+  --     },
+  --   },
+  -- })
+  --
   -- Lua
   lspconfig.lua_ls.setup({
     capabilities = capabilities,
@@ -345,7 +368,7 @@ return {
   lazy = false,
   dependencies = {
     "windwp/nvim-autopairs",
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     "creativenull/efmls-configs-nvim",
     "hrsh7th/nvim-cmp",
     "hrsh7th/cmp-buffer",
