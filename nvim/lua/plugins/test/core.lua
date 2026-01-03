@@ -52,7 +52,7 @@ return {
       table.insert(
         adapters,
         require("neotest-go")({
-          experimental = { test_table = true },
+          -- experimental = { test_table = true },
           args = { "-v" },
         })
       )
