@@ -63,7 +63,7 @@ require("lazy").setup({
     --- Custom Transparency Logic and Toggle
     -- This dummy entry uses Lazy.nvim's 'config' to run your custom transparency setup.
     -- It ensures your custom transparency (and toggle) applies *after* the colorscheme.
-    {
+     {
       "folke/lazy.nvim", -- Using lazy.nvim itself as a placeholder for config
       name = "my_custom_transparency_setup", -- A unique name for clarity
       lazy = false, -- Load this configuration on startup
