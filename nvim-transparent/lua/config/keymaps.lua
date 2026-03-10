@@ -6,3 +6,8 @@ vim.keymap.set("n", "<leader>pf", ":%!pg_format -<CR>", { desc = "[P]ostgres [F]
 
 -- vim.keymap.set("n", "<leader>r", "<cmd>NeotreeRefresh<CR>", { desc = "♻️ Refresh Neo-tree" })
 vim.keymap.set("n", "<leader>rr", ":source %<CR>", { desc = "♻️Reload current file (source %)" })
+
+-- to view all diagnostic in a file
+vim.keymap.set("n", "<leader>ca", function()
+  vim.diagnostic.setqflist()
+end, { desc = "Diagnostics (all)" })
