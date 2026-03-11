@@ -5,9 +5,8 @@ local keybindings = require("config.jump-to-definition")
 
 local config = function()
   require("neoconf").setup({})
-  local cmp_nvim_lsp = require("cmp_nvim_lsp")
   local lspconfig = require("lspconfig")
-  local capabilities = cmp_nvim_lsp.default_capabilities()
+  local capabilities = require("blink.cmp").get_lsp_capabilities()
 
   -- Define highlight groups for diagnostics
   vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#FF0000", bold = true }) -- Red for errors
@@ -370,8 +369,6 @@ return {
     "windwp/nvim-autopairs",
     "mason-org/mason.nvim",
     "creativenull/efmls-configs-nvim",
-    "hrsh7th/nvim-cmp",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-nvim-lsp",
+    "saghen/blink.cmp",
   },
 }

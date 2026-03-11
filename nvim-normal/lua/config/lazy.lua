@@ -128,6 +128,7 @@ require("lazy").setup({
     { "hrsh7th/cmp-nvim-lsp", enabled = false },
     { "hrsh7th/cmp-buffer", enabled = false },
     { "hrsh7th/cmp-path", enabled = false },
+    { "hrsh7th/cmp-emoji", enabled = false },
     { "saadparwaiz1/cmp_luasnip", enabled = false },
 
     -- null-ls for formatting

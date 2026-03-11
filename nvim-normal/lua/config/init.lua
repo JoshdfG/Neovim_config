@@ -30,9 +30,3 @@ vim.diagnostic.config({
   float = { border = "rounded" },
 })
 
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    -- Force cmp to load immediately after vim starts
-    require("cmp")
-  end,
-})
