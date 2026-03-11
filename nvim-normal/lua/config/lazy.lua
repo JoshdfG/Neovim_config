@@ -17,7 +17,6 @@ vim.opt.rtp:prepend(lazypath)
 -- Require the transparency utility module.
 -- Make sure this file exists at lua/utils/transparency.lua
 -- local transparency_utils = require("util.transparency")
-
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
@@ -69,7 +68,14 @@ require("lazy").setup({
     { import = "plugins.formatting.conform" },
     { import = "plugins.formatting.prettier" },
     { import = "plugins.util.mini-hipatterns" },
-
+    {
+      "folke/noice.nvim",
+      opts = {
+        presets = {
+          lsp_doc_border = true, -- adds border to hover docs and signature help
+        },
+      },
+    },
     {
       "christoomey/vim-tmux-navigator",
       cmd = {
@@ -101,34 +107,31 @@ require("lazy").setup({
         require("telescope").setup({})
       end,
     },
-    -- {
-    --   "Pocco81/auto-save.nvim",
-    --   opts = {
-    --     enabled = true,
-    --     events = { "InsertLeave", "TextChanged" }, -- Save on leaving insert mode or text changes
-    --     write_all_buffers = false, -- Only save current buffer
-    --     debounce_delay = 135, -- Delay to avoid excessive saves
-    --   },
-    -- },
+
     { "Mofiqul/vscode.nvim" },
     {
       "onsails/lspkind.nvim",
       lazy = true,
     },
+    { "saghen/blink.cmp", enabled = true },
     {
-      "hrsh7th/nvim-cmp",
-      enabled = true,
-      dependencies = {
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-        "saadparwaiz1/cmp_luasnip",
-        "L3MON4D3/LuaSnip",
+      "saghen/blink.cmp",
+      opts = {
+        completion = {
+          menu = { border = "rounded" },
+          documentation = { window = { border = "rounded" } },
+        },
       },
     },
+
+    { "hrsh7th/nvim-cmp", enabled = false },
+    { "hrsh7th/cmp-nvim-lsp", enabled = false },
+    { "hrsh7th/cmp-buffer", enabled = false },
+    { "hrsh7th/cmp-path", enabled = false },
+    { "saadparwaiz1/cmp_luasnip", enabled = false },
+
     -- null-ls for formatting
     {
-
       -- "jose-elias-alvarez/null-ls.nvim",
       "nvimtools/none-ls.nvim",
       dependencies = { "nvim-lua/plenary.nvim" },
@@ -163,26 +166,6 @@ require("lazy").setup({
       },
     },
   },
-  -- Lazy.nvim UI configuration (usually at the end)
-  -- ui = {
-  --   -- If you are using a Nerd Font: set icons to an empty table which will use the
-  --   -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-  --   icons = vim.g.have_nerd_font and {} or {
-  --     cmd = "⌘",
-  --     config = "🛠",
-  --     event = "📅",
-  --     ft = "📂",
-  --     init = "⚙",
-  --     keys = "🗝",
-  --     plugin = "🔌",
-  --     runtime = "💻",
-  --     require = "🌙",
-  --     source = "📄",
-  --     start = "🚀",
-  --     task = "📌",
-  --     lazy = "💤 ",
-  --   },
-  -- },
 })
 -- ======================
 -- transparency settings
