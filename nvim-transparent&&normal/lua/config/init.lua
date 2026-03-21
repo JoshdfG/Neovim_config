@@ -24,31 +24,9 @@ require("snacks").setup({ image = { enabled = false } })
 require("lspconfig").sqls.setup({})
 -- Optional, you don't have to run setup.
 -- v
-local plugins = "plugins"
 
-local opts = {
-  defaults = {
-    lazy = true,
-  },
-  install = {
-    colorscheme = { "tokyonight" },
-  },
-  rtp = {
-    disabled_plugins = {
-      "gzip",
-      "matchit",
-      "matchparen",
-      "netrw",
-      "netrwPlugin",
-      "tarPlugin",
-      "tohtml",
-      "tutor",
-      "zipPlugin",
-    },
-  },
-  change_detection = {
-    notify = false,
-  },
-}
+-- Diagnostics floating window
+vim.diagnostic.config({
+  float = { border = "rounded" },
+})
 
-require("lazy").setup(plugins, opts)

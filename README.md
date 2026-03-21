@@ -74,6 +74,13 @@ mkdir ~/.config/nvim
 - `vscode-solidity-server`
 - `vtsls`
 
+## Transparency
+
+If you downloaded the version named `transparent and normal` follow these steps:
+
+- Rename to nvim
+- To switch between states use `<leader> + a + t`: leader is your space key: space + a + t
+
 For solidity compilers kindly install the language server globally `npm install -g @nomicfoundation/solidity-language-server`
 
 The other 2 folders `alacritty` and `tmux` are just terminals configurations you can make use of them if you use the same terminal.
