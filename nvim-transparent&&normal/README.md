@@ -1,10 +1,3 @@
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
-
-# 💤 LazyVim
-
-# Neovim Configurations.
-
 ## What's Neovim
 
 Neovim is a text editor that is based on Vim, but with a focus on improving usability and extensibility. It aims to be a modern and powerful alternative to Vim, with a more flexible plugin architecture and better support for graphical user interfaces (GUIs). [Read More](https://neovim.io/).
@@ -79,8 +72,13 @@ mkdir ~/.config/nvim
 - `vscode-solidity-server`
 - `vtsls`
 
+## Transparency
+
+If you downloaded the version named `transparent and normal` follow these steps:
+
+- Rename to nvim
+- To switch between states use `<leader> + a + t`: leader is your space key: space + a + t
+
 For solidity compilers kindly install the language server globally `npm install -g @nomicfoundation/solidity-language-server`
 
 The other 2 folders `alacritty` and `tmux` are just terminals configurations you can make use of them if you use the same terminal.
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
