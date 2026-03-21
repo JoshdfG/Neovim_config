@@ -13,7 +13,11 @@ return {
       "nvim-neotest/neotest-go", -- Go
       "mrcjkb/rustaceanvim", -- Rust (includes Neotest adapter)
       "marilari88/neotest-vitest", -- JavaScript/TypeScript
-      -- Optional: For C++ (no dedicated adapter, using generic test runners)
+      -- C/C++ adapters
+      "orjangj/neotest-ctest", -- CTest adapter for C/C++
+      "rosstang/neotest-catch2", -- Catch2 framework for C++
+      "Shatur/neovim-tasks", -- Required for neotest-catch2
+      "vim-test/vim-test", -- Required for neotest-vim-test
       "nvim-neotest/neotest-vim-test", -- Fallback for C++
       "stevearc/overseer.nvim",
       "maxandron/neotest-cairo",
@@ -30,6 +34,13 @@ return {
       local function is_cairo_project()
         local cwd = vim.fn.getcwd()
         return vim.fn.filereadable(cwd .. "/Scarb.toml") == 1
+      end
+
+      -- Helper function to check if we're in a CMake project
+      local function is_cmake_project()
+        local cwd = vim.fn.getcwd()
+        return vim.fn.filereadable(cwd .. "/CMakeLists.txt") == 1
+          or vim.fn.filereadable(cwd .. "/CMakePresets.json") == 1
       end
 
       -- Build adapters list
@@ -52,10 +63,10 @@ return {
       table.insert(
         adapters,
         require("neotest-go")({
-          -- experimental = { test_table = true },
           args = { "-v" },
         })
       )
+
       -- Foundry adapter
       table.insert(adapters, require("neotest-foundry"))
 
@@ -63,9 +74,19 @@ return {
       if is_cairo_project() then
         table.insert(adapters, require("neotest-cairo"))
       end
+
       -- Rust adapter
       if is_rust_project() then
         table.insert(adapters, require("rustaceanvim.neotest"))
+      end
+
+      -- C/C++ adapters
+      if is_cmake_project() then
+        -- CTest adapter for CMake projects
+        table.insert(adapters, require("neotest-ctest"))
+
+        -- Catch2 adapter specifically for Catch2 framework
+        table.insert(adapters, require("neotest-catch2"))
       end
 
       -- Vim-test fallback for C++
@@ -73,7 +94,7 @@ return {
         adapters,
         require("neotest-vim-test")({
           ignore_filetypes = { "python", "go", "rust" },
-          allow_file_types = { "cpp" },
+          allow_file_types = { "cpp", "c" },
         })
       )
 
@@ -86,7 +107,6 @@ return {
         output = { open_on_run = true },
         quickfix = {
           open = function()
-            -- Check if trouble is available before using it
             local ok, trouble = pcall(require, "trouble")
             if ok then
               trouble.open({ mode = "quickfix", focus = false })
@@ -220,6 +240,231 @@ return {
     optional = true,
   },
 }
+-- befor adding c and c++
+-- return {
+--   -- Neotest configuration for core languages only
+--   {
+--     "nvim-neotest/neotest",
+--     dependencies = {
+--       "nvim-neotest/nvim-nio",
+--       "nvim-lua/plenary.nvim",
+--       "antoinemadec/FixCursorHold.nvim",
+--       "nvim-treesitter/nvim-treesitter",
+--       -- Language-specific adapters
+--       "nvim-neotest/neotest-plenary", -- For plenary.test (Lua)
+--       "nvim-neotest/neotest-python", -- Python
+--       "nvim-neotest/neotest-go", -- Go
+--       "mrcjkb/rustaceanvim", -- Rust (includes Neotest adapter)
+--       "marilari88/neotest-vitest", -- JavaScript/TypeScript
+--       -- Optional: For C++ (no dedicated adapter, using generic test runners)
+--       "nvim-neotest/neotest-vim-test", -- Fallback for C++
+--       "stevearc/overseer.nvim",
+--       "maxandron/neotest-cairo",
+--       "llllvvuu/neotest-foundry",
+--       "orjangj/neotest-ctest",
+--       "neotest-catch2",
+--     },
+--     opts = function()
+--       -- Helper function to check if we're in a Rust project
+--       local function is_rust_project()
+--         local cwd = vim.fn.getcwd()
+--         return vim.fn.filereadable(cwd .. "/Cargo.toml") == 1
+--       end
+--
+--       -- Helper function to check if we're in a Cairo project
+--       local function is_cairo_project()
+--         local cwd = vim.fn.getcwd()
+--         return vim.fn.filereadable(cwd .. "/Scarb.toml") == 1
+--       end
+--
+--       -- Build adapters list
+--       local adapters = {}
+--
+--       -- Always include these adapters
+--       table.insert(adapters, require("neotest-plenary"))
+--
+--       -- Python adapter
+--       table.insert(
+--         adapters,
+--         require("neotest-python")({
+--           dap = { justMyCode = false },
+--           runner = "pytest",
+--           args = { "--log-level=INFO" },
+--         })
+--       )
+--
+--       -- Go adapter
+--       table.insert(
+--         adapters,
+--         require("neotest-go")({
+--           -- experimental = { test_table = true },
+--           args = { "-v" },
+--         })
+--       )
+--       -- Foundry adapter
+--       table.insert(adapters, require("neotest-foundry"))
+--
+--       -- Cairo adapter
+--       if is_cairo_project() then
+--         table.insert(adapters, require("neotest-cairo"))
+--       end
+--       -- Rust adapter
+--       if is_rust_project() then
+--         table.insert(adapters, require("rustaceanvim.neotest"))
+--       end
+--
+--       -- Vim-test fallback for C++
+--       table.insert(
+--         adapters,
+--         require("neotest-vim-test")({
+--           ignore_filetypes = { "python", "go", "rust" },
+--           allow_file_types = { "cpp" },
+--         })
+--       )
+--
+--       -- Vitest for JavaScript/TypeScript
+--       table.insert(adapters, require("neotest-vitest"))
+--
+--       return {
+--         adapters = adapters,
+--         status = { virtual_text = true },
+--         output = { open_on_run = true },
+--         quickfix = {
+--           open = function()
+--             -- Check if trouble is available before using it
+--             local ok, trouble = pcall(require, "trouble")
+--             if ok then
+--               trouble.open({ mode = "quickfix", focus = false })
+--             else
+--               vim.cmd("copen")
+--             end
+--           end,
+--         },
+--         consumers = {
+--           trouble = function(client)
+--             local ok, trouble = pcall(require, "trouble")
+--             if not ok then
+--               return {}
+--             end
+--
+--             client.listeners.results = function(adapter_id, results, partial)
+--               if partial then
+--                 return
+--               end
+--               local tree = assert(client:get_position(nil, { adapter = adapter_id }))
+--               local failed = 0
+--               for pos_id, result in pairs(results) do
+--                 if result.status == "failed" and tree:get_key(pos_id) then
+--                   failed = failed + 1
+--                 end
+--               end
+--               vim.schedule(function()
+--                 if trouble.is_open() then
+--                   trouble.refresh()
+--                   if failed == 0 then
+--                     trouble.close()
+--                   end
+--                 end
+--               end)
+--             end
+--             return {}
+--           end,
+--         },
+--       }
+--     end,
+--     config = function(_, opts)
+--       local neotest_ns = vim.api.nvim_create_namespace("neotest")
+--       vim.diagnostic.config({
+--         virtual_text = {
+--           format = function(diagnostic)
+--             local message = diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
+--             return message
+--           end,
+--         },
+--       }, neotest_ns)
+--
+--       require("neotest").setup(opts)
+--     end,
+--     keys = {
+--       { "<leader>t", "", desc = "+test" },
+--       {
+--         "<leader>tt",
+--         function()
+--           require("neotest").run.run(vim.fn.expand("%"))
+--         end,
+--         desc = "Run File (Neotest)",
+--       },
+--       {
+--         "<leader>tT",
+--         function()
+--           require("neotest").run.run(vim.uv.cwd())
+--         end,
+--         desc = "Run All Test Files (Neotest)",
+--       },
+--       {
+--         "<leader>tr",
+--         function()
+--           require("neotest").run.run()
+--         end,
+--         desc = "Run Nearest (Neotest)",
+--       },
+--       {
+--         "<leader>tl",
+--         function()
+--           require("neotest").run.run_last()
+--         end,
+--         desc = "Run Last (Neotest)",
+--       },
+--       {
+--         "<leader>ts",
+--         function()
+--           require("neotest").summary.toggle()
+--         end,
+--         desc = "Toggle Summary (Neotest)",
+--       },
+--       {
+--         "<leader>to",
+--         function()
+--           require("neotest").output.open({ enter = true, auto_close = true })
+--         end,
+--         desc = "Show Output (Neotest)",
+--       },
+--       {
+--         "<leader>tO",
+--         function()
+--           require("neotest").output_panel.toggle()
+--         end,
+--         desc = "Toggle Output Panel (Neotest)",
+--       },
+--       {
+--         "<leader>tS",
+--         function()
+--           require("neotest").run.stop()
+--         end,
+--         desc = "Stop (Neotest)",
+--       },
+--       {
+--         "<leader>tw",
+--         function()
+--           require("neotest").watch.toggle(vim.fn.expand("%"))
+--         end,
+--         desc = "Toggle Watch (Neotest)",
+--       },
+--       {
+--         "<leader>td",
+--         function()
+--           require("neotest").run.run({ strategy = "dap" })
+--         end,
+--         desc = "Debug Nearest (Neotest)",
+--       },
+--     },
+--   },
+--   -- DAP for debugging (optional)
+--   {
+--     "mfussenegger/nvim-dap",
+--     optional = true,
+--   },
+-- }
 -- works well
 -- return {
 --   -- Neotest configuration for core languages only
