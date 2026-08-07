@@ -21,6 +21,13 @@ if f then
   end
 end
 
+-- -- Warm grey split divider (overrides colorscheme default)
+-- local function set_split_color()
+--   vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#333", bg = "NONE" })
+--   vim.api.nvim_set_hl(0, "VertSplit", { fg = "#333", bg = "NONE" })
+-- end
+-- set_split_color()
+
 -- Auto-save colorscheme whenever it changes
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()

@@ -34,6 +34,10 @@ local config = function()
     underline = true, -- Underline errors/warnings
     update_in_insert = false, -- Update after leaving insert mode
     severity_sort = true, -- Prioritize errors over warnings
+    float = {
+      border = "rounded",
+      source = true, -- show which LSP reported the diagnostic
+    },
   })
 
   -- Move
