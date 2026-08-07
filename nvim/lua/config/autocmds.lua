@@ -21,6 +21,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
+vim.filetype.add({ extension = { ino = "arduino", pde = "arduino" } })
+
 -- highlight on yank
 local highlight_yank_group = vim.api.nvim_create_augroup("HighlightYankGroup", {})
 vim.api.nvim_create_autocmd("TextYankPost", {
