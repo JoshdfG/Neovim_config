@@ -58,6 +58,18 @@ local config = function()
   -- })
   --
 
+  require("lspconfig").arduino_language_server.setup({
+    cmd = {
+      "arduino-language-server",
+      "-cli-config",
+      vim.fn.expand("~/.arduino15/arduino-cli.yaml"),
+      "-fqbn",
+      "arduino:avr:uno",
+      "-clangd",
+      "clangd",
+    },
+  })
+
   require("lspconfig").move_analyzer.setup({
     cmd = { os.getenv("HOME") .. "/.sui/bin/move-analyzer" },
     filetypes = { "move" },

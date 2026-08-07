@@ -36,6 +36,7 @@ mkdir ~/.config/nvim
 - `debugpy`
 - `delve`
 - `docker-compose-language-server`
+- arduino-language-server
 - `dockerfile-language-server`
 - `efm`
 - `emmet-ls`
