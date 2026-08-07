@@ -13,6 +13,7 @@ return {
       "nvim-neotest/neotest-go", -- Go
       "mrcjkb/rustaceanvim", -- Rust (includes Neotest adapter)
       "marilari88/neotest-vitest", -- JavaScript/TypeScript
+      "nvim-neotest/neotest-jest",
       -- C/C++ adapters
       "orjangj/neotest-ctest", -- CTest adapter for C/C++
       "rosstang/neotest-catch2", -- Catch2 framework for C++
@@ -28,6 +29,28 @@ return {
       local function is_rust_project()
         local cwd = vim.fn.getcwd()
         return vim.fn.filereadable(cwd .. "/Cargo.toml") == 1
+      end
+
+      -- Helper: detect a Jest project (NestJS default test runner)
+      local function is_jest_project()
+        local cwd = vim.fn.getcwd()
+        if
+          vim.fn.filereadable(cwd .. "/jest.config.js") == 1
+          or vim.fn.filereadable(cwd .. "/jest.config.ts") == 1
+          or vim.fn.filereadable(cwd .. "/jest.config.mjs") == 1
+          or vim.fn.filereadable(cwd .. "/jest.config.cjs") == 1
+        then
+          return true
+        end
+        -- fallback: check package.json for a "jest" key
+        local pkg_path = cwd .. "/package.json"
+        if vim.fn.filereadable(pkg_path) == 1 then
+          local ok, pkg = pcall(vim.fn.json_decode, vim.fn.readfile(pkg_path))
+          if ok and pkg and pkg.jest then
+            return true
+          end
+        end
+        return false
       end
 
       -- Helper function to check if we're in a Cairo project
@@ -69,6 +92,33 @@ return {
 
       -- Foundry adapter
       table.insert(adapters, require("neotest-foundry"))
+
+      -- Jest / Vitest for JavaScript/TypeScript (mutually exclusive per project)
+      if is_jest_project() then
+        table.insert(
+          adapters,
+          require("neotest-jest")({
+            jestCommand = "npx jest",
+            jestConfigFile = function(file)
+              local cwd = vim.uv.cwd()
+              -- e2e tests live under /test and use their own config
+              if file and file:match("/test/") then
+                local e2e_config = cwd .. "/test/jest-e2e.json"
+                if vim.uv.fs_stat(e2e_config) then
+                  return e2e_config
+                end
+              end
+              -- everything else: unit specs use the "jest" key in package.json
+              return cwd .. "/package.json"
+            end,
+            cwd = function()
+              return vim.uv.cwd()
+            end,
+          })
+        )
+      else
+        table.insert(adapters, require("neotest-vitest"))
+      end
 
       -- Cairo adapter
       if is_cairo_project() then

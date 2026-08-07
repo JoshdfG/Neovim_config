@@ -14,9 +14,8 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Require the transparency utility module.
--- Make sure this file exists at lua/utils/transparency.lua
--- local transparency_utils = require("util.transparency")
+-- Transparency utility module (lua/util/transparency.lua)
+local transparency_utils = require("util.transparency")
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
@@ -68,6 +67,8 @@ require("lazy").setup({
     { import = "plugins.formatting.conform" },
     { import = "plugins.formatting.prettier" },
     { import = "plugins.util.mini-hipatterns" },
+    { import = "plugins.languages.noir" },
+    { import = "plugins.languages.prisma" },
     {
       "folke/noice.nvim",
       opts = {
@@ -130,7 +131,24 @@ require("lazy").setup({
     { "hrsh7th/cmp-path", enabled = false },
     { "hrsh7th/cmp-emoji", enabled = false },
     { "saadparwaiz1/cmp_luasnip", enabled = false },
-
+    --- Colorscheme: folke/tokyonight.nvim
+    -- This colorscheme has built-in transparency options.
+    {
+      "folke/tokyonight.nvim",
+      lazy = false, -- Load this colorscheme on startup
+      priority = 1000, -- Ensure it loads before other UI-related plugins
+      opts = {
+        style = "moon", -- Choose your preferred style: 'moon', 'storm', 'night', 'day'
+        -- UNCOMMENT THIS BLOCK TO ACTIVATE TRANSPARENCY
+        styles = {
+          -- sidebars = "transparent", -- Make sidebars (like NvimTree) transparent
+          floats = "transparent", -- Make floating windows (like LSP info, Telescope) transparent
+        },
+      },
+      -- config = function()
+      --   vim.cmd.colorscheme("tokyonight")
+      -- end,
+    },
     -- null-ls for formatting
     {
       -- "jose-elias-alvarez/null-ls.nvim",
@@ -169,63 +187,102 @@ require("lazy").setup({
   },
 })
 -- ======================
--- transparency settings
--- --- Colorscheme: folke/tokyonight.nvim
--- This colorscheme has built-in transparency options.
--- {
--- "folke/tokyonight.nvim",
--- lazy = false, -- Load this colorscheme on startup
--- priority = 1000, -- Ensure it loads before other UI-related plugins
--- opts = {
---   style = "moon", -- Choose your preferred style: 'moon', 'storm', 'night', 'day'
---   -- UNCOMMENT THIS BLOCK TO ACTIVATE TRANSPARENCY
---   transparent = true, -- Enable core transparency
---   styles = {
---     sidebars = "transparent", -- Make sidebars (like NvimTree) transparent
---     floats = "transparent", -- Make floating windows (like LSP info, Telescope) transparent
---   },
--- },
--- config = function()
---   vim.cmd.colorscheme("tokyonight")
--- end,
--- },
+-- Transparency setup & persistent toggle (PRO VERSION)
+-- ======================
 
---- Custom Transparency Logic and Toggle
--- This dummy entry uses Lazy.nvim's 'config' to run your custom transparency setup.
--- It ensures your custom transparency (and toggle) applies *after* the colorscheme.
--- {
---   "folke/lazy.nvim", -- Using lazy.nvim itself as a placeholder for config
---   name = "my_custom_transparency_setup", -- A unique name for clarity
---   lazy = false, -- Load this configuration on startup
---
---   config = function()
---     -- Initial transparency application when Neovim starts.
---     -- This will be overridden by the colorscheme first, then reapplied by the autocommand.
---     --
---     -- AMD THIS ALSO
---     transparency_utils.enable()
---
---     -- Auto-reapply custom transparency after any colorscheme loads.
---     -- This is crucial to ensure your custom highlight settings (bg=NONE)
---     -- persist even if a colorscheme tries to set a background.
---     vim.api.nvim_create_autocmd("ColorScheme", {
---       pattern = "*",
---       callback = function()
---         -- Only re-enable if our custom transparency is currently toggled on.
---         if transparency_utils.is_enabled() then
---           transparency_utils.enable()
---         end
---       end,
---     })
---
---     -- Define the keymap to toggle transparency.
---     vim.keymap.set("n", "<leader>at", transparency_utils.toggle, {
---       desc = "Toggle Neovim Transparency",
---       noremap = true,
---       silent = true,
---     })
---   end,
--- },
+local transparency_file = vim.fn.stdpath("data") .. "/transparency.txt"
+
+local function save_transparency_state(enabled)
+  local f = io.open(transparency_file, "w")
+  if f then
+    f:write(enabled and "true" or "false")
+    f:close()
+  end
+end
+
+local function load_transparency_state()
+  local f = io.open(transparency_file, "r")
+  if f then
+    local state = f:read("*l")
+    f:close()
+    return state == "true"
+  end
+  return false
+end
+
+-- ======================
+-- AUTOCMDS (robust + correct timing)
+-- ======================
+
+-- Reapply after ANY colorscheme change
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    if transparency_utils.is_enabled() then
+      transparency_utils.reapply()
+    end
+  end,
+})
+
+-- LazyVim / lazy.nvim fully loaded
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  callback = function()
+    if transparency_utils.is_enabled() then
+      transparency_utils.reapply()
+    end
+  end,
+})
+
+-- Telescope fully rendered (CRUCIAL FIX)
+vim.api.nvim_create_autocmd("User", {
+  pattern = "TelescopePreviewerLoaded",
+  callback = function()
+    if transparency_utils.is_enabled() then
+      transparency_utils.reapply()
+    end
+  end,
+})
+
+-- Fallback for Telescope prompt edge cases
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "TelescopePrompt",
+  callback = function()
+    if transparency_utils.is_enabled() then
+      vim.schedule(transparency_utils.reapply)
+    end
+  end,
+})
+
+-- ======================
+-- STARTUP STATE (clean + deterministic)
+-- ======================
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    local state = load_transparency_state()
+    if state then
+      transparency_utils.enable()
+    else
+      transparency_utils.disable()
+    end
+  end,
+})
+
+-- ======================
+-- KEYMAP (toggle + persist)
+-- ======================
+
+vim.keymap.set("n", "<leader>at", function()
+  transparency_utils.toggle()
+  save_transparency_state(transparency_utils.is_enabled())
+end, {
+  desc = "Toggle Transparency",
+  noremap = true,
+  silent = true,
+})
+
 -- =======================
 -- ---------------------------------------------------------------
 -- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
